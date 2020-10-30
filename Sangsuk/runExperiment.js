@@ -86,20 +86,52 @@ var temp = chunkify(threeSetData, 3, true);
 
 timeline.push(rateImages);
 timeline.push(collect);
-timeline.push(trial);
 
+function returnAll(collect){
 
-var seeIfThere = {
-  type: 'call-function',
-  func: function(){setTruths(jsPsych.data, timeline)}
-}
-timeline.push(seeIfThere);
+  console.log(collect)
+    var trialSet =  {
+          type: 'image-keyboard-response',
+          timeline: [
+            {stimulus: collect.array[0][0].stimulus}
+          ],
+          on_start: function(){console.log(collect)},
+          choices: ['q', 'p'],
+          data: {whichWindow: 'image'}
+  } 
+   return trialSet;
+  }
 
-var trialSet = {
-  type: 'call-function',
-  func: function(){setSets(jsPsych.data, timeline)}
-}
-timeline.push(trialSet);
+ var asyncTrial = {
+  type: 'image-keyboard-response',
+  timeline: [
+    {stimulus: '_faces/AF06_A_L.jpg'},
+    {stimulus: '_faces/AF06_A_L.jpg'}
+  ],
+  // timeline: [
+  //   {stimulus: returnAll(collect).timeline[0].stimulus},
+  //   {stimulus: returnAll(collect).timeline[1].stimulus}
+  // ],
+  on_start: function(trial){
+    console.log(returnAll(collect).timeline[0].stimulus)
+    trial['timeline'] = returnAll(collect);
+  }
+ }
+ timeline.push(asyncTrial)
+
+ var trial = {
+  type: 'html-keyboard-response',
+  timeline: [
+    {stimulus: '_faces/AF06_A_L.jpg'},
+    {stimulus: '_faces/AF06_A_L.jpg'}
+  ],
+  on_start: function(){
+    console.log(jsPsych.data.get().values())
+   }
+  }
+  timeline.push(trial);
+
+//  runTrial(collect);
 
  // fixation presentation window
  var fixationWindow = {
@@ -185,3 +217,45 @@ timeline.push(trialSet);
 
    //  stimulus: "<img id='image' src='https://www.eipny.com/wp-content/uploads/2018/12/White-blank-image.jpg' onload='this.onload=null; this.src=getImage();' style='float: left; height: 400px; width: 400px; margin-right: 200px' /> <img id='image' src='https://www.eipny.com/wp-content/uploads/2018/12/White-blank-image.jpg' onload='this.onload=null; this.src=getImage();' style='float: left; height: 400px; width: 400px; margin-left: 200px' />",
   // stimulus: jsPsych.timelineVariable('image'), 
+
+
+  // function returnAll(collect){
+  //   var arrayOfTrails = [];
+  
+  //   console.log(collect);
+  
+  //   //Split up and pass collect to this function
+  //   for(i = 0; i < 3; i++){
+  //     for(j = 0; j < 3; j++){
+  //       var trialSet =  {
+  //         type: 'image-keyboard-response',
+  //         stimulus: 'https://static.dezeen.com/uploads/2020/06/architects-designers-racial-justice-george-floyd-protests-dezeen-sq-a.jpg',
+  //         on_start: function(collect){
+  //           trialSet.stimulus = collect.array[i][j].stimulus;
+  //         },
+  //         choices: ['q', 'p'],
+  //         data: {whichWindow: 'image'}
+  //     }
+  //     arrayOfTrails.push(trialSet);
+  //   } 
+  //  }
+  //  return arrayOfTrails;
+  // }
+  
+  //  var asyncTrial = {
+  //   type: 'image-keyboard-response',
+  //   stimulus: '_faces/AF06_A_L.jpg',
+  //   on_start: function(){
+  //     console.log(returnAll())
+  //   },
+  //   timeline: function(){
+  //     var array = [];
+  //     for(i = 0; i < 9; i++){
+  //       array.push({stimulus: returnAll()[i]})
+  //       console.log(returnAll()[i])
+  //     }
+  //     console.log(array)
+  //     return array;
+  //   }
+  //  }
+  //  timeline.push(asyncTrial)
